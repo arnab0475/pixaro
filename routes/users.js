@@ -1,13 +1,5 @@
 const mongoose = require('mongoose');
 const plm = require('passport-local-mongoose');
-require('dotenv').config();
-
-// Use environment variable for MongoDB connection
-const mongoURI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/pixaro";
-
-mongoose.connect(mongoURI)
-  .then(() => console.log('MongoDB connected successfully in users.js'))
-  .catch(err => console.error('MongoDB connection error in users.js:', err));
 
 const userSchema = new mongoose.Schema({
   username: {
