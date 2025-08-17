@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= targetUser.fullname %> - Pixaro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/stylesheets/profile.css">
+    <link rel="stylesheet" href="/stylesheets/dark-mode.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-info" href="/">Pixaro</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/feed">Feed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+<br><br>
+    <!-- Main Content -->
+    <div class="containerpers">
+        <!-- User Info Card -->
+        <div class="cardpers mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <div class="profile-picture-container">
+                        <% if (targetUser.dp) { %>
+                            <img src="/images/uploads/<%= targetUser.dp %>" alt="Profile Picture" class="profile-picture">
+                        <% } else { %>
+                            <div class="profile-picture default-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="user-info">
+                        <h2 class="name mb-2"><%= targetUser.fullname %></h2>
+                        <p class="username text-muted mb-3">@<%= targetUser.username %></p>
+                        
+                        <!-- Stats -->
+                        <div class="stats-container mb-3">
+                            <div class="stat-item">
+                                <span class="stat-number"><%= targetUser.posts.length %></span>
+                                <span class="stat-label">Posts</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number followers-count"><%= targetUser.followers.length %></span>
+                                <span class="stat-label">Followers</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number"><%= targetUser.following.length %></span>
+                                <span class="stat-label">Following</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Follow Button (only show if not own profile) -->
+                        <% if (!isOwnProfile) { %>
+                            <button class="btn follow-btn <%= isFollowing ? 'btn-outline-primary' : 'btn-primary' %>" 
+                                    data-user-id="<%= targetUser._id %>" 
+                                    id="followBtn">
+                                <i class="fas <%= isFollowing ? 'fa-user-minus' : 'fa-user-plus' %>"></i>
+                                <span class="follow-text"><%= isFollowing ? 'Unfollow' : 'Follow' %></span>
+                            </button>
+                        <% } else { %>
+                            <span class="badge bg-success">Your Profile</span>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Posts Section -->
+        <div class="cardpers">
+            <h3 class="section-title mb-4">
+                <i class="fas fa-images me-2"></i>
+                <%= isOwnProfile ? 'Your Posts' : targetUser.fullname + "'s Posts" %>
+            </h3>
+            
+            <% if (targetUser.posts.length > 0) { %>
+                <div class="posts-grid">
+                    <% targetUser.posts.reverse().forEach(function(post) { %>
+                        <div class="post-card">
+                            <img src="/images/uploads/<%= post.image %>" class="card-img-top" alt="Post Image">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= post.imageText %></h5>
+                                <p class="post-date">
+                                    <i class="fas fa-calendar-alt me-1"></i>
+                                    <%= new Date(post.createdAt).toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    }) %>
+                                </p>
+                                
+                                <!-- Like Section -->
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div class="like-section">
+                                        <button class="btn btn-sm like-btn <%= currentUser._id && post.likes.includes(currentUser._id) ? 'liked' : '' %>" 
+                                                data-post-id="<%= post._id %>" 
+                                                title="<%= currentUser._id && post.likes.includes(currentUser._id) ? 'Unlike' : 'Like' %>">
+                                            <i class="fas fa-heart"></i>
+                                        </button>
+                                        <span class="like-count ms-2"><%= post.likes.length %> <%= post.likes.length === 1 ? 'like' : 'likes' %></span>
+                                    </div>
+                                    
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn btn-sm btn-outline-primary me-2 comment-toggle-btn" 
+                                                data-post-id="<%= post._id %>" 
+                                                title="View Comments">
+                                            <i class="fas fa-comment"></i>
+                                            <span class="comment-count ms-1"><%= post.comments ? post.comments.length : 0 %></span>
+                                        </button>
+                                        
+                                        <% if (isOwnProfile) { %>
+                                            <button class="btn btn-sm btn-outline-danger delete-post-btn" 
+                                                    data-post-id="<%= post._id %>" 
+                                                    title="Delete Post">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                
+                                <!-- Comments Section -->
+                                <div class="comments-section mt-3" id="comments-<%= post._id %>" style="display: none;">
+                                    <div class="comments-container">
+                                        <div class="comments-list" id="comments-list-<%= post._id %>">
+                                            <!-- Comments will be loaded here -->
+                                        </div>
+                                        
+                                        <!-- Add Comment Form -->
+                                        <div class="add-comment-form mt-3">
+                                            <div class="input-group">
+                                                <input type="text" 
+                                                       class="form-control comment-input" 
+                                                       placeholder="Add a comment..." 
+                                                       data-post-id="<%= post._id %>"
+                                                       maxlength="500">
+                                                <button class="btn btn-primary add-comment-btn" 
+                                                        data-post-id="<%= post._id %>" 
+                                                        type="button">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-camera fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No posts yet</h4>
+                    <p class="text-muted">
+                        <%= isOwnProfile ? 'Start sharing your moments!' : targetUser.fullname + ' hasn\'t shared any posts yet.' %>
+                    </p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javascripts/theme-toggle.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Follow/Unfollow functionality
+        const followBtn = document.getElementById('followBtn');
+        if (followBtn) {
+          followBtn.addEventListener('click', function() {
+            const userId = this.getAttribute('data-user-id');
+            const followText = this.querySelector('.follow-text');
+            const icon = this.querySelector('i');
+            const followersCount = document.querySelector('.followers-count');
+            
+            fetch(`/follow-user/${userId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.isFollowing !== undefined) {
+                // Update button appearance
+                if (data.isFollowing) {
+                  this.className = 'btn follow-btn btn-outline-primary';
+                  followText.textContent = 'Unfollow';
+                  icon.className = 'fas fa-user-minus';
+                } else {
+                  this.className = 'btn follow-btn btn-primary';
+                  followText.textContent = 'Follow';
+                  icon.className = 'fas fa-user-plus';
+                }
+                
+                // Update followers count
+                followersCount.textContent = data.followersCount;
+                
+                // Add animation
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                  this.style.transform = 'scale(1)';
+                }, 150);
+              } else {
+                alert('Error: ' + data.message);
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred while processing your request.');
+            });
+          });
+        }
+        
+        // Like functionality (same as profile page)
+        const likeButtons = document.querySelectorAll('.like-btn');
+        likeButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const likeCountSpan = this.parentElement.querySelector('.like-count');
+            
+            fetch(`/like-post/${postId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.liked !== undefined) {
+                if (data.liked) {
+                  this.classList.add('liked');
+                  this.title = 'Unlike';
+                } else {
+                  this.classList.remove('liked');
+                  this.title = 'Like';
+                }
+                
+                const likeText = data.likeCount === 1 ? 'like' : 'likes';
+                likeCountSpan.textContent = `${data.likeCount} ${likeText}`;
+                
+                if (data.liked) {
+                  this.style.animation = 'heartBeat 0.6s ease-in-out';
+                  setTimeout(() => {
+                    this.style.animation = '';
+                  }, 600);
+                }
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred while processing your like.');
+            });
+          });
+        });
+        
+        // Comment functionality (same as other pages)
+        const commentToggleButtons = document.querySelectorAll('.comment-toggle-btn');
+        const addCommentButtons = document.querySelectorAll('.add-comment-btn');
+        const commentInputs = document.querySelectorAll('.comment-input');
+        
+        // Toggle comments visibility
+        commentToggleButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const commentsSection = document.getElementById(`comments-${postId}`);
+            const commentsList = document.getElementById(`comments-list-${postId}`);
+            
+            if (commentsSection.style.display === 'none') {
+              commentsSection.style.display = 'block';
+              loadComments(postId, commentsList);
+            } else {
+              commentsSection.style.display = 'none';
+            }
+          });
+        });
+        
+        // Add comment functionality
+        addCommentButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const commentInput = document.querySelector(`.comment-input[data-post-id="${postId}"]`);
+            const commentText = commentInput.value.trim();
+            
+            if (commentText === '') {
+              alert('Please enter a comment');
+              return;
+            }
+            
+            addComment(postId, commentText, commentInput);
+          });
+        });
+        
+        // Enter key support
+        commentInputs.forEach(input => {
+          input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              const postId = this.getAttribute('data-post-id');
+              const addButton = document.querySelector(`.add-comment-btn[data-post-id="${postId}"]`);
+              addButton.click();
+            }
+          });
+        });
+        
+        // Comment functions (same as other pages)
+        function loadComments(postId, commentsList) {
+          fetch(`/get-comments/${postId}`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.comments && data.comments.length > 0) {
+                commentsList.innerHTML = data.comments.map(comment => createCommentHTML(comment)).join('');
+                
+                const deleteButtons = commentsList.querySelectorAll('.delete-comment-btn');
+                deleteButtons.forEach(btn => {
+                  btn.addEventListener('click', function() {
+                    const commentId = this.getAttribute('data-comment-id');
+                    deleteComment(commentId, postId);
+                  });
+                });
+              } else {
+                commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+              }
+            })
+            .catch(error => {
+              console.error('Error loading comments:', error);
+              commentsList.innerHTML = '<div class="no-comments">Error loading comments</div>';
+            });
+        }
+        
+        function addComment(postId, commentText, commentInput) {
+          fetch(`/add-comment/${postId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ commentText: commentText })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.comment) {
+              commentInput.value = '';
+              
+              const commentCountSpan = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .comment-count`);
+              commentCountSpan.textContent = data.commentCount;
+              
+              const commentsList = document.getElementById(`comments-list-${postId}`);
+              const noCommentsDiv = commentsList.querySelector('.no-comments');
+              if (noCommentsDiv) {
+                noCommentsDiv.remove();
+              }
+              
+              const newCommentHTML = createCommentHTML(data.comment);
+              commentsList.insertAdjacentHTML('afterbegin', newCommentHTML);
+              
+              const newDeleteBtn = commentsList.querySelector(`.delete-comment-btn[data-comment-id="${data.comment._id}"]`);
+              if (newDeleteBtn) {
+                newDeleteBtn.addEventListener('click', function() {
+                  deleteComment(data.comment._id, postId);
+                });
+              }
+            } else {
+              alert('Error: ' + data.message);
+            }
+          })
+          .catch(error => {
+            console.error('Error adding comment:', error);
+            alert('An error occurred while adding the comment.');
+          });
+        }
+        
+        function deleteComment(commentId, postId) {
+          if (confirm('Are you sure you want to delete this comment?')) {
+            fetch(`/delete-comment/${commentId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.message === 'Comment deleted successfully') {
+                const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`).closest('.comment-item');
+                commentElement.remove();
+                
+                const commentCountSpan = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .comment-count`);
+                commentCountSpan.textContent = data.commentCount;
+                
+                const commentsList = document.getElementById(`comments-list-${postId}`);
+                if (commentsList.children.length === 0) {
+                  commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+                }
+              } else {
+                alert('Error: ' + data.message);
+              }
+            })
+            .catch(error => {
+              console.error('Error deleting comment:', error);
+              alert('An error occurred while deleting the comment.');
+            });
+          }
+        }
+        
+        function createCommentHTML(comment) {
+          const commentDate = new Date(comment.createdAt).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          const isOwner = '<%= currentUser._id %>' === comment.user._id;
+          const deleteButton = isOwner ? 
+            `<button class="delete-comment-btn" data-comment-id="${comment._id}" title="Delete Comment">
+              <i class="fas fa-trash"></i> Delete
+            </button>` : '';
+          
+          return `
+            <div class="comment-item">
+              <div class="comment-header">
+                <span class="comment-author">${comment.user.fullname || comment.user.username}</span>
+                <span class="comment-date">${commentDate}</span>
+              </div>
+              <p class="comment-text">${comment.text}</p>
+              <div class="comment-actions">
+                ${deleteButton}
+              </div>
+            </div>
+          `;
+        }
+      });
+    </script>
+</body>
+</html>

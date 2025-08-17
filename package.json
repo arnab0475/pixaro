@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "pixaro-social-media",
+  "version": "1.0.0",
+  "description": "Pixaro - A modern social media platform with posts, likes, comments, follows, and dark mode",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www",
+    "build": "echo 'Build complete'"
+  },
+  "keywords": [
+    "social-media",
+    "nodejs",
+    "express",
+    "mongodb",
+    "bootstrap"
+  ],
+  "author": "Pixaro Team",
+  "dependencies": {
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^16.6.1",
+    "ejs": "^3.1.10",
+    "express": "~4.16.1",
+    "express-session": "^1.18.2",
+    "http-errors": "~1.6.3",
+    "mongoose": "^8.17.0",
+    "morgan": "~1.9.1",
+    "multer": "^2.0.2",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^8.0.0",
+    "serverless-http": "^3.2.0",
+    "uuid": "^11.1.0"
+  }
+}

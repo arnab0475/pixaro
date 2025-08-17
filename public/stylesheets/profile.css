@@ -1,0 +1,313 @@
+body {
+    font-family: "Gill roy";
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .containerpers {
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .cardpers {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 20px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .profile-picture:hover {
+    transform: scale(1.05);
+  }
+  
+  .profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+  }
+  
+  .profile-picture-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+  }
+  
+  .profile-picture-overlay i {
+    color: white;
+    font-size: 24px;
+  }
+  
+  .name {
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  .username {
+    font-size: 18px;
+    color: #777;
+    margin: 10px 0;
+  }
+  
+  .tagline,
+  .description {
+    color: #555;
+    margin: 10px 0;
+  }
+  .flex{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f30d19;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .button:hover {
+    background-color: #df0812;
+  }
+  
+  /* Upload section styling */
+  .upload-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+  }
+  
+  .upload-section h4 {
+    color: #333;
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  
+  .upload-form .form-control {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+  
+  .upload-form .form-control:focus {
+    border-color: #f30d19;
+    box-shadow: 0 0 0 0.2rem rgba(243, 13, 25, 0.25);
+  }
+  
+  /* Profile picture change button styling */
+  .profile-picture + form + .button {
+    background-color: #007bff;
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+  
+  .profile-picture + form + .button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Like button styling */
+  .like-btn {
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    padding: 5px 10px;
+  }
+  
+  .like-btn:hover {
+    color: #e91e63;
+    transform: scale(1.1);
+  }
+  
+  .like-btn.liked {
+    color: #e91e63;
+    animation: heartBeat 0.6s ease-in-out;
+  }
+  
+  .like-btn.liked:hover {
+    color: #c2185b;
+  }
+  
+  .like-count {
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .like-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Heart beat animation */
+  @keyframes heartBeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.3); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.3); }
+    70% { transform: scale(1); }
+  }
+
+  /* Comment Section Styling */
+  .comment-toggle-btn {
+    transition: all 0.3s ease;
+  }
+  
+  .comment-toggle-btn:hover {
+    transform: scale(1.05);
+  }
+  
+  .comments-section {
+    border-top: 1px solid #e9ecef;
+    padding-top: 15px;
+    margin-top: 15px;
+  }
+  
+  .comments-container {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .comment-item {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-left: 3px solid #007bff;
+  }
+  
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .comment-author {
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+  }
+  
+  .comment-date {
+    font-size: 12px;
+    color: #6c757d;
+    margin-left: auto;
+  }
+  
+  .comment-text {
+    color: #212529;
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0;
+  }
+  
+  .comment-actions {
+    margin-top: 5px;
+  }
+  
+  .delete-comment-btn {
+    font-size: 12px;
+    padding: 2px 8px;
+    border: none;
+    background: none;
+    color: #dc3545;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .delete-comment-btn:hover {
+    color: #c82333;
+    background-color: #f8d7da;
+    border-radius: 4px;
+  }
+  
+  .add-comment-form .input-group {
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .comment-input {
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+  
+  .comment-input:focus {
+    box-shadow: none;
+    border-color: transparent;
+  }
+  
+  .add-comment-btn {
+    border: none;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+  }
+  
+  .add-comment-btn:hover {
+    background: linear-gradient(45deg, #0056b3, #004085);
+    transform: scale(1.05);
+  }
+  
+  .no-comments {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 20px;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .containerpers {
+      max-width: 95%;
+      padding: 15px;
+    }
+    
+    .cardpers {
+      padding: 15px;
+    }
+    
+    .profile-picture {
+      width: 120px;
+      height: 120px;
+    }
+    
+    .upload-section {
+      padding: 15px;
+    }
+  }
+  

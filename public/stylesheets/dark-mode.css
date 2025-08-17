@@ -1,0 +1,293 @@
+/* Dark Mode CSS Variables and Styles */
+
+:root {
+  /* Light Mode Colors (Default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  --border-color: #dee2e6;
+  --card-bg: #ffffff;
+  --navbar-bg: #343a40;
+  --navbar-text: #ffffff;
+  --button-primary: #007bff;
+  --button-secondary: #6c757d;
+  --button-danger: #dc3545;
+  --button-success: #28a745;
+  --input-bg: #ffffff;
+  --input-border: #ced4da;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --shadow-hover: rgba(0, 0, 0, 0.15);
+}
+
+/* Dark Mode Colors */
+[data-theme="dark"] {
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-muted: #888888;
+  --border-color: #404040;
+  --card-bg: #1e1e1e;
+  --navbar-bg: #000000;
+  --navbar-text: #ffffff;
+  --button-primary: #0d6efd;
+  --button-secondary: #6c757d;
+  --button-danger: #dc3545;
+  --button-success: #198754;
+  --input-bg: #2d2d2d;
+  --input-border: #404040;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --shadow-hover: rgba(0, 0, 0, 0.4);
+}
+
+/* Apply theme colors to elements */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Cards and containers */
+.card, .cardpers {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+  box-shadow: 0 2px 4px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.card:hover, .cardpers:hover {
+  box-shadow: 0 4px 8px var(--shadow-hover);
+}
+
+/* Navbar */
+.navbar-dark {
+  background-color: var(--navbar-bg) !important;
+}
+
+.navbar-dark .navbar-brand,
+.navbar-dark .navbar-nav .nav-link {
+  color: var(--navbar-text) !important;
+}
+
+/* Text colors */
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+/* Form inputs */
+.form-control {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text-primary);
+}
+
+.form-control:focus {
+  background-color: var(--input-bg);
+  border-color: var(--button-primary);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--button-primary);
+  border-color: var(--button-primary);
+}
+
+.btn-outline-primary {
+  color: var(--button-primary);
+  border-color: var(--button-primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--button-primary);
+  border-color: var(--button-primary);
+}
+
+.btn-danger {
+  background-color: var(--button-danger);
+  border-color: var(--button-danger);
+}
+
+.btn-outline-danger {
+  color: var(--button-danger);
+  border-color: var(--button-danger);
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--button-danger);
+  border-color: var(--button-danger);
+}
+
+/* Comment items */
+.comment-item {
+  background-color: var(--bg-secondary);
+  border-left-color: var(--button-primary);
+  color: var(--text-primary);
+}
+
+/* Post cards */
+.post-card {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.card-header {
+  background-color: var(--bg-secondary) !important;
+  border-bottom-color: var(--border-color);
+}
+
+/* Links */
+a {
+  color: var(--button-primary);
+}
+
+a:hover {
+  color: var(--button-primary);
+  filter: brightness(1.2);
+}
+
+/* Borders */
+.border, .border-top, .border-bottom, .border-left, .border-right {
+  border-color: var(--border-color) !important;
+}
+
+/* Modals and dropdowns */
+.modal-content {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.dropdown-menu {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.dropdown-item {
+  color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--shadow);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px var(--shadow-hover);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* Dark mode specific adjustments */
+[data-theme="dark"] .theme-toggle {
+  background: linear-gradient(45deg, #ffc107, #ff8c00);
+}
+
+[data-theme="dark"] .bg-light {
+  background-color: var(--bg-secondary) !important;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: var(--card-bg) !important;
+}
+
+[data-theme="dark"] .text-dark {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .text-black-50 {
+  color: var(--text-secondary) !important;
+}
+
+/* Image overlays and filters for dark mode */
+[data-theme="dark"] img:not(.profile-picture):not(.rounded-circle) {
+  filter: brightness(0.9);
+}
+
+/* Scrollbar styling for dark mode */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 4px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Animation for theme transition */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Empty state styling */
+.empty-state {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .empty-state i {
+  color: var(--text-muted);
+}
+
+/* Stats styling */
+.stat-number {
+  color: var(--text-primary);
+}
+
+.stat-label {
+  color: var(--text-secondary);
+}
+
+/* Follow button adjustments */
+[data-theme="dark"] .follow-user-btn.following {
+  background-color: var(--bg-tertiary);
+  border-color: var(--text-muted);
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .follow-user-btn.following:hover {
+  background-color: var(--button-danger);
+  border-color: var(--button-danger);
+  color: white;
+}

@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile - Your Creative Space</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/stylesheets/profile.css">
+    <link rel="stylesheet" href="/stylesheets/dark-mode.css">
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javascripts/theme-toggle.js"></script>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+          <a class="navbar-brand fw-bold text-info" href="/">Pixaro</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                  <li class="nav-item">
+                      <a class="nav-link" href="/profile">Profile</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link active" href="/feed">Feed</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link text-danger" href="/logout">Logout</a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+  </nav><br><br>
+    <div class="containerpers">
+        <div class="cardpers">
+          <div class="profile-picture">
+            <% if (user.dp && user.dp !== '') { %>
+              <img src="/images/uploads/<%= user.dp %>" alt="Profile Picture" id="profileImg">
+            <% } else { %>
+              <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D" alt="Default Profile Picture" id="profileImg">
+            <% } %>
+            <div class="profile-picture-overlay">
+              <i class="fas fa-camera"></i>
+            </div>
+          </div>
+          
+          <!-- Profile Picture Upload Form -->
+          <form action="/upload-profile-picture" method="post" enctype="multipart/form-data" id="profilePictureForm" style="display: none;">
+            <input type="file" name="profilePicture" id="profilePictureInput" accept="image/*">
+          </form>
+          
+          <button type="button" class="button mb-3" onclick="document.getElementById('profilePictureInput').click()">
+            Change Profile Picture
+          </button>
+          
+          <h2 class="name"><%=user.fullname%></h2>
+          <h3 class="username">@<%=user.username%></h3>
+          <p class="tagline">Welcome to your creative space!</p>
+          <p class="description">Share your moments with the world.</p>
+          
+          <a href="/logout" class="button mb-3">Logout</a>
+          
+          <!-- Post Upload Form -->
+          <div class="upload-section">
+            <h4 class="mb-3">Share a New Post</h4>
+            <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
+              <div class="mb-3">
+                <input type="text" name="filecaption" placeholder="Write a caption for your post..." class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <input type="file" name="file" class="form-control" accept="image/*" required>
+              </div>
+              <button type="submit" class="button">Share Post</button>
+            </form>
+          </div>
+        </div>
+    </div>
+    <div class="container">
+      <div class="cards flex">
+        <% user.posts.forEach(function(post){ %>
+          <div class="card post-card-profile" style="width: 18rem;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <small class="text-muted"><%= post.createdAt.toLocaleDateString() %></small>
+              <button class="btn btn-sm btn-outline-danger delete-post-btn" data-post-id="<%= post._id %>" title="Delete Post">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <img src="/images/uploads/<%=post.image%>" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title"><%=post.imageText%></h5>
+              
+              <!-- Like Section -->
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="like-section">
+                  <button class="btn btn-sm like-btn <%= user._id && post.likes.includes(user._id) ? 'liked' : '' %>" 
+                          data-post-id="<%= post._id %>" 
+                          title="<%= user._id && post.likes.includes(user._id) ? 'Unlike' : 'Like' %>">
+                      <i class="fas fa-heart"></i>
+                  </button>
+                  <span class="like-count ms-2"><%= post.likes.length %> <%= post.likes.length === 1 ? 'like' : 'likes' %></span>
+                </div>
+                
+                <div class="d-flex align-items-center">
+                  <button class="btn btn-sm btn-outline-primary me-2 comment-toggle-btn" 
+                          data-post-id="<%= post._id %>" 
+                          title="View Comments">
+                    <i class="fas fa-comment"></i>
+                    <span class="comment-count ms-1"><%= post.comments ? post.comments.length : 0 %></span>
+                  </button>
+                  
+                  <button class="btn btn-sm btn-outline-danger delete-post-btn" 
+                          data-post-id="<%= post._id %>" 
+                          title="Delete Post">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Comments Section -->
+              <div class="comments-section mt-3" id="comments-<%= post._id %>" style="display: none;">
+                <div class="comments-container">
+                  <div class="comments-list" id="comments-list-<%= post._id %>">
+                    <!-- Comments will be loaded here -->
+                  </div>
+                  
+                  <!-- Add Comment Form -->
+                  <div class="add-comment-form mt-3">
+                    <div class="input-group">
+                      <input type="text" 
+                             class="form-control comment-input" 
+                             placeholder="Add a comment..." 
+                             data-post-id="<%= post._id %>"
+                             maxlength="500">
+                      <button class="btn btn-primary add-comment-btn" 
+                              data-post-id="<%= post._id %>" 
+                              type="button">
+                        <i class="fas fa-paper-plane"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      
+          </div> 
+    </div>
+    
+    <script>
+      // Handle profile picture upload
+      document.getElementById('profilePictureInput').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+          // Auto-submit the form when a file is selected
+          document.getElementById('profilePictureForm').submit();
+        }
+      });
+      
+      // Add hover effect to profile picture
+      const profilePicture = document.querySelector('.profile-picture');
+      profilePicture.addEventListener('mouseenter', function() {
+        this.querySelector('.profile-picture-overlay').style.opacity = '1';
+      });
+      
+      profilePicture.addEventListener('mouseleave', function() {
+        this.querySelector('.profile-picture-overlay').style.opacity = '0';
+      });
+      
+      // Handle delete post functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.delete-post-btn');
+        
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            
+            if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+              fetch(`/delete-post/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                }
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.message === 'Post deleted successfully') {
+                  // Remove the post card from the DOM
+                  this.closest('.post-card-profile').remove();
+                  
+                  // Show success message
+                  alert('Post deleted successfully!');
+                } else {
+                  alert('Error: ' + data.message);
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the post.');
+              });
+            }
+          });
+        });
+        
+        // Handle like/unlike functionality
+        const likeButtons = document.querySelectorAll('.like-btn');
+        
+        likeButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const likeCountSpan = this.parentElement.querySelector('.like-count');
+            
+            fetch(`/like-post/${postId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.liked !== undefined) {
+                // Update button appearance
+                if (data.liked) {
+                  this.classList.add('liked');
+                  this.title = 'Unlike';
+                } else {
+                  this.classList.remove('liked');
+                  this.title = 'Like';
+                }
+                
+                // Update like count
+                const likeText = data.likeCount === 1 ? 'like' : 'likes';
+                likeCountSpan.textContent = `${data.likeCount} ${likeText}`;
+                
+                // Add heart beat animation
+                if (data.liked) {
+                  this.style.animation = 'heartBeat 0.6s ease-in-out';
+                  setTimeout(() => {
+                    this.style.animation = '';
+                  }, 600);
+                }
+              } else {
+                console.error('Error:', data.message);
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred while processing your like.');
+            });
+          });
+        });
+        
+        // Handle comment functionality
+        const commentToggleButtons = document.querySelectorAll('.comment-toggle-btn');
+        const addCommentButtons = document.querySelectorAll('.add-comment-btn');
+        const commentInputs = document.querySelectorAll('.comment-input');
+        
+        // Toggle comments visibility
+        commentToggleButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const commentsSection = document.getElementById(`comments-${postId}`);
+            const commentsList = document.getElementById(`comments-list-${postId}`);
+            
+            if (commentsSection.style.display === 'none') {
+              // Show comments and load them
+              commentsSection.style.display = 'block';
+              loadComments(postId, commentsList);
+            } else {
+              // Hide comments
+              commentsSection.style.display = 'none';
+            }
+          });
+        });
+        
+        // Add comment functionality
+        addCommentButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const commentInput = document.querySelector(`.comment-input[data-post-id="${postId}"]`);
+            const commentText = commentInput.value.trim();
+            
+            if (commentText === '') {
+              alert('Please enter a comment');
+              return;
+            }
+            
+            addComment(postId, commentText, commentInput);
+          });
+        });
+        
+        // Allow Enter key to submit comment
+        commentInputs.forEach(input => {
+          input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              const postId = this.getAttribute('data-post-id');
+              const addButton = document.querySelector(`.add-comment-btn[data-post-id="${postId}"]`);
+              addButton.click();
+            }
+          });
+        });
+        
+        // Function to load comments
+        function loadComments(postId, commentsList) {
+          fetch(`/get-comments/${postId}`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.comments && data.comments.length > 0) {
+                commentsList.innerHTML = data.comments.map(comment => createCommentHTML(comment)).join('');
+                
+                // Add delete event listeners to new comment delete buttons
+                const deleteButtons = commentsList.querySelectorAll('.delete-comment-btn');
+                deleteButtons.forEach(btn => {
+                  btn.addEventListener('click', function() {
+                    const commentId = this.getAttribute('data-comment-id');
+                    deleteComment(commentId, postId);
+                  });
+                });
+              } else {
+                commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+              }
+            })
+            .catch(error => {
+              console.error('Error loading comments:', error);
+              commentsList.innerHTML = '<div class="no-comments">Error loading comments</div>';
+            });
+        }
+        
+        // Function to add comment
+        function addComment(postId, commentText, commentInput) {
+          fetch(`/add-comment/${postId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ commentText: commentText })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.comment) {
+              // Clear input
+              commentInput.value = '';
+              
+              // Update comment count
+              const commentCountSpan = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .comment-count`);
+              commentCountSpan.textContent = data.commentCount;
+              
+              // Add new comment to the list
+              const commentsList = document.getElementById(`comments-list-${postId}`);
+              const noCommentsDiv = commentsList.querySelector('.no-comments');
+              if (noCommentsDiv) {
+                noCommentsDiv.remove();
+              }
+              
+              const newCommentHTML = createCommentHTML(data.comment);
+              commentsList.insertAdjacentHTML('afterbegin', newCommentHTML);
+              
+              // Add delete event listener to new comment
+              const newDeleteBtn = commentsList.querySelector(`.delete-comment-btn[data-comment-id="${data.comment._id}"]`);
+              if (newDeleteBtn) {
+                newDeleteBtn.addEventListener('click', function() {
+                  deleteComment(data.comment._id, postId);
+                });
+              }
+            } else {
+              alert('Error: ' + data.message);
+            }
+          })
+          .catch(error => {
+            console.error('Error adding comment:', error);
+            alert('An error occurred while adding the comment.');
+          });
+        }
+        
+        // Function to delete comment
+        function deleteComment(commentId, postId) {
+          if (confirm('Are you sure you want to delete this comment?')) {
+            fetch(`/delete-comment/${commentId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.message === 'Comment deleted successfully') {
+                // Remove comment from DOM
+                const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`).closest('.comment-item');
+                commentElement.remove();
+                
+                // Update comment count
+                const commentCountSpan = document.querySelector(`.comment-toggle-btn[data-post-id="${postId}"] .comment-count`);
+                commentCountSpan.textContent = data.commentCount;
+                
+                // Show no comments message if no comments left
+                const commentsList = document.getElementById(`comments-list-${postId}`);
+                if (commentsList.children.length === 0) {
+                  commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+                }
+              } else {
+                alert('Error: ' + data.message);
+              }
+            })
+            .catch(error => {
+              console.error('Error deleting comment:', error);
+              alert('An error occurred while deleting the comment.');
+            });
+          }
+        }
+        
+        // Function to create comment HTML
+        function createCommentHTML(comment) {
+          const commentDate = new Date(comment.createdAt).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          const isOwner = '<%= user._id %>' === comment.user._id;
+          const deleteButton = isOwner ? 
+            `<button class="delete-comment-btn" data-comment-id="${comment._id}" title="Delete Comment">
+              <i class="fas fa-trash"></i> Delete
+            </button>` : '';
+          
+          return `
+            <div class="comment-item">
+              <div class="comment-header">
+                <span class="comment-author">${comment.user.fullname || comment.user.username}</span>
+                <span class="comment-date">${commentDate}</span>
+              </div>
+              <p class="comment-text">${comment.text}</p>
+              <div class="comment-actions">
+                ${deleteButton}
+              </div>
+            </div>
+          `;
+        }
+      });
+    </script>
+  </body>
+</html>
