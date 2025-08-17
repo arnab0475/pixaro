@@ -1,6 +1,17 @@
 // Load environment variables
 require('dotenv').config();
 
+// MongoDB Connection
+const mongoose = require('mongoose');
+const mongoURI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/pixaro";
+
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected successfully'))
+.catch(err => console.error('MongoDB connection error:', err));
+
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');

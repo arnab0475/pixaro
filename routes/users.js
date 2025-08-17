@@ -1,6 +1,17 @@
 const mongoose = require('mongoose');
-const plm= require('passport-local-mongoose');
-mongoose.connect("mongodb://127.0.0.1:27017/dataAsso")
+const plm = require('passport-local-mongoose');
+require('dotenv').config();
+
+// Use environment variable for MongoDB connection
+const mongoURI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/dataAsso";
+
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected successfully'))
+.catch(err => console.error('MongoDB connection error:', err));
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
